@@ -73,12 +73,12 @@ define('bz.pages/directives/category',[
                 var settings = $parse(attrs.bzPagesCategory)(scope);
 
                 CategoryFactory.get(settings, function(category) {
-
+                    scope.category = category;
                 });
                 scope.loading = true;
-                PageFactory.get(settings, function (page) {
+                PageFactory.get(settings, function (pages) {
                     scope.loading = false;
-                    scope.page = page;
+                    scope.pages = pages;
                 }, function () {
                     scope.loading = false;
                 });
