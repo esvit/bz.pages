@@ -45,20 +45,6 @@ define('bz.pages/directives/page',[
         };
     }]);
 });
-define('bz.pages/controllers/page',[
-    'bz.pages/app',
-
-    'bz.pages/factories/page'
-], function(app) {
-    'use strict';
-
-    app.controller('bz.pages.controllers.page',
-        ['$scope', 'page', 'bz.pages.factories.page', function($scope, page, PageFactory) {
-            $scope.page = page;
-            PageFactory.hit({ 'id': page.id });
-        }]);
-
-});
 define('bz.pages/factories/category',[
     'bz.pages/app'
 ], function(app) {
@@ -69,6 +55,51 @@ define('bz.pages/factories/category',[
 
         return service;
     }]);
+
+});
+define('bz.pages/directives/category',[
+    'bz.pages/app',
+
+    'bz.pages/factories/category'
+], function(app) {
+    'use strict';
+
+    app.directive('bzPagesCategory', ['bz.pages.factories.page', 'bz.pages.factories.category', '$parse', '$log',
+        function(PageFactory, CategoryFactory, $parse, $log) {
+        return {
+            restrict: 'AE',
+            scope: true,
+            link: function(scope, element, attrs) {
+                var settings = $parse(attrs.bzPagesCategory)(scope);
+
+                CategoryFactory.get(settings, function(category) {
+
+                });
+                scope.loading = true;
+                PageFactory.get(settings, function (page) {
+                    scope.loading = false;
+                    scope.page = page;
+                }, function () {
+                    scope.loading = false;
+                });
+            }
+        };
+    }]);
+});
+define('bz.pages/controllers/page',[
+    'bz.pages/app',
+
+    'bz.pages/factories/page'
+], function(app) {
+    'use strict';
+
+    app.controller('bz.pages.controllers.page',
+        ['$scope', 'page', 'bz.pages.factories.page', function($scope, page, PageFactory) {
+            if (page) {
+                $scope.page = page;
+                PageFactory.hit({ 'id': page.id });
+            }
+        }]);
 
 });
 define('bz.pages/controllers/category',[
@@ -119,6 +150,7 @@ define('bz.pages',[
     'bz.pages/app',
 
     'bz.pages/directives/page',
+    'bz.pages/directives/category',
 
     'bz.pages/controllers/page',
     'bz.pages/controllers/category'
