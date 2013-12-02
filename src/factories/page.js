@@ -5,6 +5,7 @@ define([
 
     app.factory('bz.pages.factories.page', ['$resource', 'bzConfig', function ($resource, config) {
         var service = $resource(config.resource('/pages/:id'), { 'id': '@id' }, {
+            'setTop': { 'method': 'PUT' },
             'hit': { 'method': 'PUT', 'params': { 'action': 'view' } } // increase view counter
         });
 
